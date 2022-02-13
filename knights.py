@@ -16,7 +16,7 @@ import pickle
 from threading import Thread
 import time
 
-token = "bdd6a9d010722934c55cecd76ef63e115337a4c6713d20fc3379e236ca20da99c189538ccdb096b75ef63"  # access_token
+token = ""  # access_token
 
 bynameList = []
 playerCount = -1
