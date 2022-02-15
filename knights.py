@@ -57,22 +57,20 @@ class domain():
         #self.blood =
 
 class manufactory():
-    def __init__(self, player, good, needToWork, efficiency, whither):
+    def __init__(self, player, good, efficiency, whither):
         self.name = f"Мануфактура номер {len(whither.buildings)+1} {good}"
         self.owner = player
         self.good = good
-        self.needToWork = needToWork
         self.level = 1
         self.efficiencyBase = efficiency
         whither.buildings.append(self)
 
 class good():
-    def __init__(self, label, types, primordial, cost, needToProduce):
+    def __init__(self, label, types, cost, consumtion):
         self.label = label 
         self.type = types
-        self.primordial = primordial
         self.cost = cost 
-        self.needToProduce = needToProduce
+        self.consumtion = consumtion
 
 def sendMessage(peerId, randomId, text, attachment=""):
     return requests.get(f"https://api.vk.com/method/messages.send?message={text}&attachment={attachment}&peer_id={peerId}&access_token={token}&v=5.131&random_id={randomId}")
@@ -137,12 +135,16 @@ def changePicture(update,user):
     
 
 def build(update,user,text):
+    if ":" not in text or ":" not in text[text.index(":") + 1:]:
+        return sendMessage(update["object"]["message"]["peer_id"], update["object"]["message"]["random_id"], "Неправильный формат")
+    types = text[:text.index(":") + 1]
+    where = 
     if user.money < 300:
         return sendMessage(update["object"]["message"]["peer_id"], update["object"]["message"]["random_id"], "Недостаточно марок")
     if len(user.domain.buildings) >= user.domain.spots:
         return sendMessage(update["object"]["message"]["peer_id"], update["object"]["message"]["random_id"], "Недостаточно места")
-    user.money -= 100
-    manufactory(user, "money", 1, user.domain)
+    user.money -= 300
+    manufactory(user, , 1, user.domain)
     return sendMessage(update["object"]["message"]["peer_id"], update["object"]["message"]["random_id"], "Постройка успешно создана")
 
 
@@ -188,16 +190,13 @@ commands = {
 playerDict = {}
 domainList = []
 
-consumption = {             #good:quantity
+goodsTypes = {
+    0:good("Хлеб", 0, 25, 10),
+}
 
-} 
-
-# goodsTypes = {
-#     0:good("Зерновые", 0, 1, 25),
-#     1:good("Золото", 1, 1, 25),
-#     2:good("Хлеб", 2, 0, 25),
-#     3:good("Райхсмарки", 3, 0, 25),
-# }
+WorldMarket = {
+    0:[1000,goodsTypes[0]],
+}
 
 def mainBot():
     global ts, update, user, text # without ts - problems; update,user.text - можно определить перечень commands в самой функции как альтернатива
